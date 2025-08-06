@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: sqibidi_questions_bd
+    environment:
+      POSTGRES_USER: sqibidi_dev
+      POSTGRES_PASSWORD: sqibidi_pwd_bd
+      POSTGRES_DB: sqibidi_questions_bd
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
