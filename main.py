@@ -1,6 +1,6 @@
-def main():
-    print("Hello from sqibidi-back-end!")
+from fastapi import FastAPI
 
+from .app.routers.questoes import questoes_router
 
-if __name__ == "__main__":
-    main()
+app = FastAPI()
+app.include_router(questoes_router)
