@@ -1,6 +1,6 @@
 from enum import Enum
-from typing import Union
 from pydantic import BaseModel
+
 
 class typeQuestion(str, Enum):
     SELECT = "SELECT"
@@ -9,10 +9,13 @@ class typeQuestion(str, Enum):
     CRETE = "CREATE"
     VIEW = "VIEW"
 
+
 class QuestionPutPostRequestDTO(BaseModel):
     name: str
     code: str
     typeQuestion: typeQuestion
+    expectedAnswer: str
+
 
 class QuestionResponseDTO(BaseModel):
     id: int
