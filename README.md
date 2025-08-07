@@ -1,5 +1,5 @@
 # sqibidi-back-end
-
+Entrega as perguntas valida e pontua as respostas do jogo Sqibidi.
 ## Como rodar o banco de dados:
 
 Estando na raíz do projeto.
