@@ -15,7 +15,7 @@ docker-compose down -v
 ```
 ## Como rodar a API
 ### Instalação
-- Instale o [UV](https://docs.astral.sh/uv/getting-started/installation/): `curl -LsSfhttps://astral.sh/uv/install.sh | sh`
+- Instale o [UV](https://docs.astral.sh/uv/getting-started/installation/): `curl -LsSf https://astral.sh/uv/install.sh | sh`
 - Instale as dependências com `uv sync`
 
 ### Rodando
