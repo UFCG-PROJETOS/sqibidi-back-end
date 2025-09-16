@@ -26,11 +26,12 @@ class AnswersTestCase(unittest.TestCase):
         )
         res = client.post(
             "/answer/",
-            json={"questionID": 1, "userID": 1},
+            data={"question_id": "1", "user_id": "1"},
             files={"file": ("clientes.csv", csv, "text/csv")},
         )
         json = res.json()
         print(json)
+        assert res.status_code == 200, res.status_code
         assert json["success"]
         assert json["score"] == 100
 
@@ -45,7 +46,7 @@ class AnswersTestCase(unittest.TestCase):
         )
         res = client.post(
             "/answer/",
-            json={"questionID": 1, "userID": 1},
+            json={"question_id": 1, "user_id": 1},
             files={"file": ("clientes.csv", csv, "text/csv")},
         )
         assert res.status_code == 422, res.status_code
