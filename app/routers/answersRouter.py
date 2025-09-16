@@ -1,5 +1,8 @@
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException, status
-from app.models.responseDTO import AnswerPostDTO, AnswerResponseDTO
+
+from ..schemas.schemas import Question
+from ..models.answerDTO import AnswerPostDTO, AnswerResponseDTO
+from ..schemas.db_setup import db_session
 
 import io
 import polars as pl
@@ -9,14 +12,22 @@ router = APIRouter(prefix="/answer", tags=["Answers"])
 
 @router.post("/", response_model=AnswerResponseDTO)
 async def answer(
-    question_id: int = Form(...), user_id: int = Form(...), file: UploadFile = File(...)
+    db: db_session,
+    question_id: int = Form(...),
+    user_id: int = Form(...),
+    file: UploadFile = File(...),
 ):
+    question = db.get(Question, question_id)
+    if not question:
+        raise HTTPException(400, "Question doesn't exist")
+
     answer = AnswerPostDTO(question_id=question_id, user_id=user_id)
+
     if not file.filename.endswith(".csv"):  # type: ignore
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="File must be a CSV."
         )
-    print(answer)
+
     contents = await file.read()
     try:
         answer_csv = pl.read_csv(io.BytesIO(contents))
