@@ -29,3 +29,5 @@ async def answer(
     )
     if correct_answer.equals(answer_csv):
         return {"success": True, "score": 100}
+    else:
+        return {"success": False, "score": 0}
