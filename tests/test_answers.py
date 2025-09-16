@@ -15,6 +15,16 @@ class AnswersTestCase(unittest.TestCase):
         tabela.write_csv(buf)
         return buf.getvalue()
 
+    def setUp(self):
+        payload = {
+            "name": "string",
+            "code": "string",
+            "type_question": "SELECT",
+            "expected_answer": [{"linha": {}}],
+        }
+        res = client.post("/question/", json=payload)
+        self.latestQuestionID = res.json()["id"]
+
     def test_answser_correctly(self):
         csv = self.generate_csv_bytes(
             ["name", "age"],
@@ -26,7 +36,7 @@ class AnswersTestCase(unittest.TestCase):
         )
         res = client.post(
             "/answer/",
-            data={"question_id": "1", "user_id": "1"},
+            data={"question_id": self.latestQuestionID, "user_id": "1"},
             files={"file": ("clientes.csv", csv, "text/csv")},
         )
         json = res.json()
@@ -45,7 +55,7 @@ class AnswersTestCase(unittest.TestCase):
         )
         res = client.post(
             "/answer/",
-            data={"question_id": "1", "user_id": "1"},
+            data={"question_id": self.latestQuestionID, "user_id": "1"},
             files={"file": ("clientes.csv", csv, "text/csv")},
         )
         assert res.status_code == 200, res.status_code
