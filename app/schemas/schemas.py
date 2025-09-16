@@ -1,5 +1,5 @@
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import Enum, ForeignKey
+from sqlalchemy import Enum, ForeignKey, JSON
 from enum import Enum as PyEnum
 
 
@@ -29,7 +29,7 @@ class Question(Base):
             native_enum=True,
         )
     )
-    expected_answer: Mapped[str]
+    expected_answer: Mapped[list[dict]] = mapped_column(JSON)
 
 
 class DailyQuestion(Base):

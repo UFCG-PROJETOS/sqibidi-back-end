@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException
 from app.models.questionDTO import (
     QuestionPutPostRequestDTO,
     QuestionResponseDTO,
+    QuestionResponseDTOWithoutAnswer,
 )
 
 from ..schemas.db_setup import db_session
@@ -20,7 +21,7 @@ def create_question(questionDTO: QuestionPutPostRequestDTO, db: db_session):
         name=questionDTO.name,
         code=questionDTO.code,
         type_question=questionDTO.type_question,
-        expected_answer=questionDTO.expectedAnswer,
+        expected_answer=questionDTO.expected_answer,
     )
     db.add(new)
     try:
@@ -30,7 +31,7 @@ def create_question(questionDTO: QuestionPutPostRequestDTO, db: db_session):
     return new
 
 
-@router.put("/{id}", response_model=QuestionResponseDTO)
+@router.put("/{id}/", response_model=QuestionResponseDTO)
 def update_question(id: int, questionDTO: QuestionPutPostRequestDTO):
     return {
         "id": 123,
@@ -40,7 +41,7 @@ def update_question(id: int, questionDTO: QuestionPutPostRequestDTO):
     }
 
 
-@router.delete("/{id}")
+@router.delete("/{id}/")
 def remove_question(id: int, db: db_session):
     db.delete(db.get(Question, id))
 
@@ -50,22 +51,30 @@ def list_questions(db: db_session):
     return db.scalars(select(Question)).all()
 
 
-@router.get("/day_question", response_model=QuestionResponseDTO)
+@router.get("/day_question/", response_model=QuestionResponseDTOWithoutAnswer)
 def get_question_day(db: db_session):
     question = db.scalars(select(DailyQuestion)).first()
     if not question:
         raise HTTPException(404, "No daily question found")
+    question = db.get(Question, question.id)
+    if not question:
+        raise HTTPException(
+            404, "Daily question was set to a question that doesn't exist"
+        )
+
     return question
 
 
-@router.put("/day_question", response_model=QuestionResponseDTO)
+@router.post("/day_question/", response_model=QuestionResponseDTO)
 def set_question_day(id: int, db: db_session):
     question = db.get(Question, id)
     if not question:
         raise HTTPException(404, "Question id doesn't exist")
 
-    question = db.scalars(select(DailyQuestion)).first()
-    if question:
-        question.id = id
+    daily = db.scalars(select(DailyQuestion)).first()
+    if daily:
+        daily.id = id
     else:
         db.add(DailyQuestion(id=id))
+
+    return question
