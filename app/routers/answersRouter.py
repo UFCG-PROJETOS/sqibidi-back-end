@@ -1,4 +1,4 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException, status
+from fastapi import APIRouter, File, Form, UploadFile, HTTPException, status
 from app.models.responseDTO import AnswerPostDTO, AnswerResponseDTO
 
 import io
@@ -8,12 +8,15 @@ router = APIRouter(prefix="/answer", tags=["Answers"])
 
 
 @router.post("/", response_model=AnswerResponseDTO)
-async def answer(answer: AnswerPostDTO, file: UploadFile = File(...)):
+async def answer(
+    question_id: int = Form(...), user_id: int = Form(...), file: UploadFile = File(...)
+):
+    answer = AnswerPostDTO(question_id=question_id, user_id=user_id)
     if not file.filename.endswith(".csv"):  # type: ignore
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="File must be a CSV."
         )
-
+    print(answer)
     contents = await file.read()
     try:
         answer_csv = pl.read_csv(io.BytesIO(contents))
