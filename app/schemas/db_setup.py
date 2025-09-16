@@ -10,7 +10,7 @@ bd_url = os.environ.get("DATABASE_URL")
 
 engine = create_engine(
     bd_url
-    or "postgresql://sqibidi_dev:sqibidi_pwd_bd@postgres-db:5432/sqibidi_questions_bd"
+    or "postgresql://sqibidi_dev:sqibidi_pwd_bd@localhost:5432/sqibidi_questions_bd"
 )
 
 

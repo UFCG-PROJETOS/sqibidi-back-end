@@ -2,8 +2,8 @@ from pydantic import BaseModel
 
 
 class AnswerPostDTO(BaseModel):
-    questionID: int
-    userID: int
+    question_id: int
+    user_id: int
 
 
 class AnswerResponseDTO(BaseModel):

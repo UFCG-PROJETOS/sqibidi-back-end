@@ -5,8 +5,8 @@ from app.models.questionDTO import (
     QuestionResponseDTO,
 )
 
-from schemas.db_setup import db_session
-from schemas.schemas import Question, DailyQuestion
+from ..schemas.db_setup import db_session
+from ..schemas.schemas import Question, DailyQuestion
 
 from sqlalchemy import select
 
@@ -19,7 +19,7 @@ def create_question(questionDTO: QuestionPutPostRequestDTO, db: db_session):
     new = Question(
         name=questionDTO.name,
         code=questionDTO.code,
-        typeQuestion=questionDTO.typeQuestion,
+        type_question=questionDTO.type_question,
         expected_answer=questionDTO.expectedAnswer,
     )
     db.add(new)
@@ -36,7 +36,7 @@ def update_question(id: int, questionDTO: QuestionPutPostRequestDTO):
         "id": 123,
         "name": questionDTO.name,
         "code": questionDTO.code,
-        "typeQuestion": questionDTO.typeQuestion,
+        "type_question": questionDTO.type_question,
     }
 
 
