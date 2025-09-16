@@ -6,12 +6,12 @@ Estando na raíz do projeto.
 
 Para subir o container:
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 Para fechar o container apagando seu volume de dados
 ```bash
-docker-compose down -v
+docker compose down -v
 ```
 ## Como rodar a API
 ### Instalação
