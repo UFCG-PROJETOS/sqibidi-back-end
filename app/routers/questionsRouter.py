@@ -65,6 +65,14 @@ def get_question_day(db: db_session):
     return question
 
 
+@router.get("/{id}/", response_model=QuestionResponseDTO)
+def get_question(id: int, db: db_session):
+    question = db.get(Question, id)
+    if not question:
+        raise HTTPException(404, "Question not found")
+    return question
+
+
 @router.post("/day_question/", response_model=QuestionResponseDTO)
 def set_question_day(id: int, db: db_session):
     question = db.get(Question, id)
