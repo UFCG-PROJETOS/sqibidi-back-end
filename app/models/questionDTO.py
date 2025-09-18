@@ -1,24 +1,25 @@
-from enum import Enum
 from pydantic import BaseModel
 
-
-class typeQuestion(str, Enum):
-    SELECT = "SELECT"
-    UPDATE = "UPDATE"
-    DELELE = "DELETE"
-    CRETE = "CREATE"
-    VIEW = "VIEW"
+from ..schemas.schemas import typeQuestion
 
 
 class QuestionPutPostRequestDTO(BaseModel):
     name: str
     code: str
-    typeQuestion: typeQuestion
-    expectedAnswer: str
+    type_question: typeQuestion
+    expected_answer: list[dict]
 
 
 class QuestionResponseDTO(BaseModel):
     id: int
     name: str
     code: str
-    typeQuestion: typeQuestion
+    type_question: typeQuestion
+    expected_answer: list[dict]
+
+
+class QuestionResponseDTOWithoutAnswer(BaseModel):
+    id: int
+    name: str
+    code: str
+    type_question: typeQuestion
