@@ -8,13 +8,6 @@ client = TestClient(app)
 
 
 class AnswersTestCase(unittest.TestCase):
-    def generate_csv_bytes(self, headers: list[str], rows: list[dict]) -> bytes:
-        """Gera um CSV em bytes a partir de headers e linhas."""
-        tabela = pl.DataFrame(rows)[headers]
-        buf = io.BytesIO()
-        tabela.write_csv(buf)
-        return buf.getvalue()
-
     def setUp(self):
         payload = {
             "name": "string",
@@ -26,18 +19,13 @@ class AnswersTestCase(unittest.TestCase):
         self.latestQuestionID = res.json()["id"]
 
     def test_answser_correctly(self):
-        csv = self.generate_csv_bytes(
-            ["name", "age"],
-            [
-                {"name": "leo", "age": "18"},
-                {"name": "keven", "age": "20"},
-                {"name": "ramon", "age": "22"},
-            ],
-        )
+        payload = {
+            "question_id": self.latestQuestionID,
+            "answer": [{"linha": {}}],
+        }
         res = client.post(
             "/answer/",
-            data={"question_id": self.latestQuestionID, "user_id": "1"},
-            files={"file": ("clientes.csv", csv, "text/csv")},
+            json=payload,
         )
         json = res.json()
         assert res.status_code == 200, res.status_code
@@ -45,18 +33,13 @@ class AnswersTestCase(unittest.TestCase):
         assert json["score"] == 100
 
     def test_answser_incorrectly(self):
-        csv = self.generate_csv_bytes(
-            ["name", "age"],
-            [
-                {"name": "leo", "age": "118"},
-                {"name": "keven", "age": "20"},
-                {"name": "ramon", "age": "22"},
-            ],
-        )
+        payload = {
+            "question_id": self.latestQuestionID,
+            "answer": [{"asdasdads": {}}],
+        }
         res = client.post(
             "/answer/",
-            data={"question_id": self.latestQuestionID, "user_id": "1"},
-            files={"file": ("clientes.csv", csv, "text/csv")},
+            json=payload,
         )
         assert res.status_code == 200, res.status_code
         json = res.json()
