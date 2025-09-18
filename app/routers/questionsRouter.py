@@ -32,13 +32,15 @@ def create_question(questionDTO: QuestionPutPostRequestDTO, db: db_session):
 
 
 @router.put("/{id}/", response_model=QuestionResponseDTO)
-def update_question(id: int, questionDTO: QuestionPutPostRequestDTO):
-    return {
-        "id": 123,
-        "name": questionDTO.name,
-        "code": questionDTO.code,
-        "type_question": questionDTO.type_question,
-    }
+def update_question(db: db_session, id: int, questionDTO: QuestionPutPostRequestDTO):
+    question = db.get(Question, id)
+    if not questionDTO:
+        raise HTTPException(404, "Question not found")
+
+    for key, value in questionDTO.model_dump(exclude_unset=True).items():
+        setattr(question, key, value)
+
+    return question
 
 
 @router.delete("/{id}/")

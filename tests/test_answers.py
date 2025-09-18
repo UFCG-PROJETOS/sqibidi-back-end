@@ -45,3 +45,29 @@ class AnswersTestCase(unittest.TestCase):
         json = res.json()
         assert not json["success"]
         assert json["score"] == 0
+
+    def test_answer_missing_question(self):
+        payload = {
+            "question_id": 999999,  # unlikely to exist
+            "answer": [{"linha": {}}],
+        }
+        res = client.post("/answer/", json=payload)
+        self.assertIn(res.status_code, (404, 400))
+
+    def test_answer_missing_fields(self):
+        payload = {
+            # missing question_id and answer
+        }
+        res = client.post("/answer/", json=payload)
+        self.assertEqual(res.status_code, 422)
+
+    def test_answer_with_empty_answer(self):
+        payload = {
+            "question_id": self.latestQuestionID,
+            "answer": [],
+        }
+        res = client.post("/answer/", json=payload)
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertFalse(data["success"])
+        self.assertEqual(data["score"], 0)
